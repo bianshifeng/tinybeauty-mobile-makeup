@@ -1,0 +1,231 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 1000" width="1000" height="1000">
+  <!-- 배경 -->
+  <rect width="1000" height="1000" fill="#f8f9fa" />
+  
+  <!-- 제목 영역 -->
+  <rect x="50" y="30" width="900" height="70" rx="10" fill="#6246ea" />
+  <text x="500" y="77" font-family="Arial, sans-serif" font-size="32" font-weight="bold" text-anchor="middle" fill="white">모바일 환경 고품질 메이크업 적용 기술 - TinyBeauty</text>
+  
+  <!-- 프로젝트 개요 박스 -->
+  <rect x="50" y="120" width="280" height="260" rx="10" fill="#ffeedd" stroke="#ff9933" stroke-width="2" />
+  <text x="190" y="150" font-family="Arial, sans-serif" font-size="22" font-weight="bold" text-anchor="middle" fill="#333">프로젝트 성과</text>
+  
+  <!-- 성과 아이콘 및 텍스트 -->
+  <!-- 모델 크기 -->
+  <circle cx="90" y="185" r="20" fill="#ff6b6b" />
+  <text x="90" y="191" font-family="Arial, sans-serif" font-size="16" font-weight="bold" text-anchor="middle" fill="white">크기</text>
+  <text x="130" y="191" font-family="Arial, sans-serif" font-size="18" text-anchor="start" fill="#333">모델 크기: </text>
+  <text x="310" y="191" font-family="Arial, sans-serif" font-size="18" font-weight="bold" text-anchor="end" fill="#ff6b6b">81KB</text>
+  
+  <!-- 추론 시간 -->
+  <circle cx="90" y="225" r="20" fill="#4ecdc4" />
+  <text x="90" y="231" font-family="Arial, sans-serif" font-size="16" font-weight="bold" text-anchor="middle" fill="white">시간</text>
+  <text x="130" y="231" font-family="Arial, sans-serif" font-size="18" text-anchor="start" fill="#333">추론 시간: </text>
+  <text x="310" y="231" font-family="Arial, sans-serif" font-size="18" font-weight="bold" text-anchor="end" fill="#4ecdc4">2.18ms</text>
+  
+  <!-- 품질 -->
+  <circle cx="90" y="265" r="20" fill="#a267ac" />
+  <text x="90" y="271" font-family="Arial, sans-serif" font-size="16" font-weight="bold" text-anchor="middle" fill="white">품질</text>
+  <text x="130" y="271" font-family="Arial, sans-serif" font-size="18" text-anchor="start" fill="#333">PSNR: </text>
+  <text x="310" y="271" font-family="Arial, sans-serif" font-size="18" font-weight="bold" text-anchor="end" fill="#a267ac">35.39dB</text>
+  
+  <!-- 평가 -->
+  <circle cx="90" y="305" r="20" fill="#ffc145" />
+  <text x="90" y="311" font-family="Arial, sans-serif" font-size="16" font-weight="bold" text-anchor="middle" fill="white">평가</text>
+  <text x="130" y="311" font-family="Arial, sans-serif" font-size="18" text-anchor="start" fill="#333">사용자 선호도: </text>
+  <text x="310" y="311" font-family="Arial, sans-serif" font-size="18" font-weight="bold" text-anchor="end" fill="#ffc145">1위</text>
+  
+  <!-- 훈련 데이터 양 -->
+  <circle cx="90" y="345" r="20" fill="#3d5a80" />
+  <text x="90" y="351" font-family="Arial, sans-serif" font-size="16" font-weight="bold" text-anchor="middle" fill="white">데이터</text>
+  <text x="130" y="351" font-family="Arial, sans-serif" font-size="18" text-anchor="start" fill="#333">초기 학습 데이터: </text>
+  <text x="310" y="351" font-family="Arial, sans-serif" font-size="18" font-weight="bold" text-anchor="end" fill="#3d5a80">5쌍</text>
+  
+  <!-- 오른쪽 상단: 사용자 평가 차트 -->
+  <rect x="350" y="120" width="600" height="260" rx="10" fill="white" stroke="#dddddd" stroke-width="2" />
+  <text x="650" y="150" font-family="Arial, sans-serif" font-size="22" font-weight="bold" text-anchor="middle" fill="#333">사용자 평가 결과</text>
+  
+  <!-- 막대 그래프 (사용자 평가 점수) -->
+  <!-- X축 -->
+  <line x1="400" y1="330" x2="900" y2="330" stroke="#333" stroke-width="2" />
+  <text x="650" y="355" font-family="Arial, sans-serif" font-size="14" text-anchor="middle" fill="#555">메이크업 방법</text>
+  
+  <!-- Y축 -->
+  <line x1="400" y1="180" x2="400" y2="330" stroke="#333" stroke-width="2" />
+  <text x="380" y="255" font-family="Arial, sans-serif" font-size="14" text-anchor="middle" fill="#555" transform="rotate(-90, 380, 255)">평균 만족도 (1-5)</text>
+  
+  <!-- 막대 그래프 데이터 -->
+  <!-- TinyBeauty -->
+  <rect x="420" y="190" width="70" height="140" fill="#6246ea" />
+  <text x="455" y="340" font-family="Arial, sans-serif" font-size="14" text-anchor="middle" fill="#333">TinyBeauty</text>
+  <text x="455" y="185" font-family="Arial, sans-serif" font-size="14" text-anchor="middle" fill="#333">4.7</text>
+  
+  <!-- BeautyGAN -->
+  <rect x="520" y="230" width="70" height="100" fill="#ff9551" />
+  <text x="555" y="340" font-family="Arial, sans-serif" font-size="14" text-anchor="middle" fill="#333">BeautyGAN</text>
+  <text x="555" y="225" font-family="Arial, sans-serif" font-size="14" text-anchor="middle" fill="#333">4.0</text>
+  
+  <!-- EleGANt -->
+  <rect x="620" y="220" width="70" height="110" fill="#ff6e40" />
+  <text x="655" y="340" font-family="Arial, sans-serif" font-size="14" text-anchor="middle" fill="#333">EleGANt</text>
+  <text x="655" y="215" font-family="Arial, sans-serif" font-size="14" text-anchor="middle" fill="#333">4.2</text>
+  
+  <!-- PSGAN -->
+  <rect x="720" y="250" width="70" height="80" fill="#5c6bc0" />
+  <text x="755" y="340" font-family="Arial, sans-serif" font-size="14" text-anchor="middle" fill="#333">PSGAN</text>
+  <text x="755" y="245" font-family="Arial, sans-serif" font-size="14" text-anchor="middle" fill="#333">3.7</text>
+  
+  <!-- BeautyDiffusion -->
+  <rect x="820" y="260" width="70" height="70" fill="#26a69a" />
+  <text x="855" y="340" font-family="Arial, sans-serif" font-size="14" text-anchor="middle" fill="#333">BeautyDiffusion</text>
+  <text x="855" y="255" font-family="Arial, sans-serif" font-size="14" text-anchor="middle" fill="#333">3.5</text>
+  
+  <!-- 가운데: 파이프라인 시각화 -->
+  <rect x="50" y="400" width="900" height="220" rx="10" fill="white" stroke="#dddddd" stroke-width="2" />
+  <text x="500" y="430" font-family="Arial, sans-serif" font-size="22" font-weight="bold" text-anchor="middle" fill="#333">Data Amplify Learning (DAL) 파이프라인</text>
+  
+  <!-- 파이프라인 단계 -->
+  <!-- 단계 1: 시드 데이터 -->
+  <rect x="80" y="460" width="140" height="80" rx="5" fill="#ffd166" />
+  <text x="150" y="500" font-family="Arial, sans-serif" font-size="14" font-weight="bold" text-anchor="middle" fill="#333">시드 데이터</text>
+  <text x="150" y="520" font-family="Arial, sans-serif" font-size="12" text-anchor="middle" fill="#333">5쌍</text>
+  
+  <!-- 화살표 1 -->
+  <polygon points="230,500 250,490 250,510" fill="#666" />
+  <line x1="220" y1="500" x2="250" y2="500" stroke="#666" stroke-width="2" />
+  
+  <!-- 단계 2: DDA 훈련 -->
+  <rect x="260" y="460" width="140" height="80" rx="5" fill="#ef476f" />
+  <text x="330" y="500" font-family="Arial, sans-serif" font-size="14" font-weight="bold" text-anchor="middle" fill="white">DDA 훈련</text>
+  <text x="330" y="520" font-family="Arial, sans-serif" font-size="12" text-anchor="middle" fill="white">Stable Diffusion + LoRA</text>
+  
+  <!-- 화살표 2 -->
+  <polygon points="410,500 430,490 430,510" fill="#666" />
+  <line x1="400" y1="500" x2="430" y2="500" stroke="#666" stroke-width="2" />
+  
+  <!-- 단계 3: 데이터 증폭 -->
+  <rect x="440" y="460" width="140" height="80" rx="5" fill="#118ab2" />
+  <text x="510" y="500" font-family="Arial, sans-serif" font-size="14" font-weight="bold" text-anchor="middle" fill="white">데이터 증폭</text>
+  <text x="510" y="520" font-family="Arial, sans-serif" font-size="12" text-anchor="middle" fill="white">4000쌍</text>
+  
+  <!-- 화살표 3 -->
+  <polygon points="590,500 610,490 610,510" fill="#666" />
+  <line x1="580" y1="500" x2="610" y2="500" stroke="#666" stroke-width="2" />
+  
+  <!-- 단계 4: TinyBeauty 훈련 -->
+  <rect x="620" y="460" width="140" height="80" rx="5" fill="#6a4c93" />
+  <text x="690" y="500" font-family="Arial, sans-serif" font-size="14" font-weight="bold" text-anchor="middle" fill="white">TinyBeauty 훈련</text>
+  <text x="690" y="520" font-family="Arial, sans-serif" font-size="12" text-anchor="middle" fill="white">경량 U-Net CNN</text>
+  
+  <!-- 화살표 4 -->
+  <polygon points="770,500 790,490 790,510" fill="#666" />
+  <line x1="760" y1="500" x2="790" y2="500" stroke="#666" stroke-width="2" />
+  
+  <!-- 단계 5: 모델 최적화 -->
+  <rect x="800" y="460" width="140" height="80" rx="5" fill="#06d6a0" />
+  <text x="870" y="500" font-family="Arial, sans-serif" font-size="14" font-weight="bold" text-anchor="middle" fill="#333">모델 최적화</text>
+  <text x="870" y="520" font-family="Arial, sans-serif" font-size="12" text-anchor="middle" fill="#333">프루닝 + 양자화 + CoreML</text>
+
+  <!-- 핵심 기술 특징 -->
+  <rect x="50" y="640" width="450" height="330" rx="10" fill="white" stroke="#dddddd" stroke-width="2" />
+  <text x="275" y="670" font-family="Arial, sans-serif" font-size="22" font-weight="bold" text-anchor="middle" fill="#333">핵심 기술 특징</text>
+  
+  <!-- 핵심 기술 1: RDM -->
+  <rect x="80" y="690" width="390" height="70" rx="8" fill="#e7f5ff" stroke="#74c0fc" stroke-width="2" />
+  <text x="100" y="720" font-family="Arial, sans-serif" font-size="18" font-weight="bold" fill="#1864ab">Residual Diffusion Model (RDM)</text>
+  <text x="100" y="745" font-family="Arial, sans-serif" font-size="14" fill="#333">얼굴 특징(주름, 특징점)을 보존하며 메이크업 적용</text>
+  
+  <!-- 핵심 기술 2: FGMM -->
+  <rect x="80" y="770" width="390" height="70" rx="8" fill="#fff9db" stroke="#fcc419" stroke-width="2" />
+  <text x="100" y="800" font-family="Arial, sans-serif" font-size="18" font-weight="bold" fill="#e67700">Fine-Grained Makeup Module (FGMM)</text>
+  <text x="100" y="825" font-family="Arial, sans-serif" font-size="14" fill="#333">얼굴 부위별 메이크업 특성 제어 및 신원 보존</text>
+  
+  <!-- 핵심 기술 3: 아이라이너 손실 -->
+  <rect x="80" y="850" width="390" height="70" rx="8" fill="#f3f0ff" stroke="#b197fc" stroke-width="2" />
+  <text x="100" y="880" font-family="Arial, sans-serif" font-size="18" font-weight="bold" fill="#6741d9">아이라이너 손실 함수</text>
+  <text x="100" y="905" font-family="Arial, sans-serif" font-size="14" fill="#333">Sobel 필터로 정밀한 아이라이너 디테일 보존</text>
+  
+  <!-- 모바일 성능 비교 -->
+  <rect x="520" y="640" width="430" height="330" rx="10" fill="white" stroke="#dddddd" stroke-width="2" />
+  <text x="735" y="670" font-family="Arial, sans-serif" font-size="22" font-weight="bold" text-anchor="middle" fill="#333">모바일 성능 비교</text>
+  
+  <!-- 그래프 타이틀 및 레이블 -->
+  <text x="550" y="710" font-family="Arial, sans-serif" font-size="16" fill="#333">모델 크기 (KB) vs 추론 시간 (ms)</text>
+  <text x="550" y="730" font-family="Arial, sans-serif" font-size="14" fill="#666">원의 크기 = PSNR 품질</text>
+  
+  <!-- 차트 영역 -->
+  <rect x="550" y="740" width="370" height="200" fill="#f8f9fa" stroke="#ddd" stroke-width="1" />
+  
+  <!-- X축 (모델 크기) -->
+  <line x1="550" y1="940" x2="920" y2="940" stroke="#333" stroke-width="1" />
+  <text x="735" y="965" font-family="Arial, sans-serif" font-size="14" text-anchor="middle" fill="#555">모델 크기 (KB)</text>
+  <!-- X축 눈금 -->
+  <line x1="580" y1="940" x2="580" y2="945" stroke="#333" stroke-width="1" />
+  <text x="580" y="955" font-family="Arial, sans-serif" font-size="10" text-anchor="middle" fill="#555">0</text>
+  <line x1="650" y1="940" x2="650" y2="945" stroke="#333" stroke-width="1" />
+  <text x="650" y="955" font-family="Arial, sans-serif" font-size="10" text-anchor="middle" fill="#555">200</text>
+  <line x1="720" y1="940" x2="720" y2="945" stroke="#333" stroke-width="1" />
+  <text x="720" y="955" font-family="Arial, sans-serif" font-size="10" text-anchor="middle" fill="#555">400</text>
+  <line x1="790" y1="940" x2="790" y2="945" stroke="#333" stroke-width="1" />
+  <text x="790" y="955" font-family="Arial, sans-serif" font-size="10" text-anchor="middle" fill="#555">600</text>
+  <line x1="860" y1="940" x2="860" y2="945" stroke="#333" stroke-width="1" />
+  <text x="860" y="955" font-family="Arial, sans-serif" font-size="10" text-anchor="middle" fill="#555">800</text>
+  
+  <!-- Y축 (추론 시간) -->
+  <line x1="550" y1="740" x2="550" y2="940" stroke="#333" stroke-width="1" />
+  <text x="540" y="840" font-family="Arial, sans-serif" font-size="14" text-anchor="middle" fill="#555" transform="rotate(-90, 540, 840)">추론 시간 (ms)</text>
+  <!-- Y축 눈금 -->
+  <line x1="545" y1="900" x2="550" y2="900" stroke="#333" stroke-width="1" />
+  <text x="535" y="905" font-family="Arial, sans-serif" font-size="10" text-anchor="end" fill="#555">0</text>
+  <line x1="545" y1="860" x2="550" y2="860" stroke="#333" stroke-width="1" />
+  <text x="535" y="865" font-family="Arial, sans-serif" font-size="10" text-anchor="end" fill="#555">10</text>
+  <line x1="545" y1="820" x2="550" y2="820" stroke="#333" stroke-width="1" />
+  <text x="535" y="825" font-family="Arial, sans-serif" font-size="10" text-anchor="end" fill="#555">20</text>
+  <line x1="545" y1="780" x2="550" y2="780" stroke="#333" stroke-width="1" />
+  <text x="535" y="785" font-family="Arial, sans-serif" font-size="10" text-anchor="end" fill="#555">30</text>
+  
+  <!-- 데이터 포인트 (원의 크기 = PSNR) -->
+  <!-- TinyBeauty -->
+  <circle cx="590" cy="898" r="20" fill="#6246ea" fill-opacity="0.7" />
+  <text x="590" y="902" font-family="Arial, sans-serif" font-size="10" text-anchor="middle" fill="white">TinyBeauty</text>
+  <line x1="590" y1="878" x2="590" y2="858" stroke="#6246ea" stroke-width="1" stroke-dasharray="2" />
+  <text x="590" y="850" font-family="Arial, sans-serif" font-size="10" text-anchor="middle" fill="#6246ea">81KB / 2.18ms</text>
+  
+  <!-- BeautyGAN -->
+  <circle cx="750" cy="840" r="15" fill="#ff9551" fill-opacity="0.7" />
+  <text x="750" y="844" font-family="Arial, sans-serif" font-size="10" text-anchor="middle" fill="white">BeautyGAN</text>
+  <line x1="750" y1="825" x2="750" y2="805" stroke="#ff9551" stroke-width="1" stroke-dasharray="2" />
+  <text x="750" y="797" font-family="Arial, sans-serif" font-size="10" text-anchor="middle" fill="#ff9551">420KB / 15ms</text>
+  
+  <!-- EleGANt -->
+  <circle cx="680" cy="860" r="17" fill="#ff6e40" fill-opacity="0.7" />
+  <text x="680" y="864" font-family="Arial, sans-serif" font-size="10" text-anchor="middle" fill="white">EleGANt</text>
+  <line x1="680" y1="843" x2="680" y2="823" stroke="#ff6e40" stroke-width="1" stroke-dasharray="2" />
+  <text x="680" y="815" font-family="Arial, sans-serif" font-size="10" text-anchor="middle" fill="#ff6e40">300KB / 10ms</text>
+  
+  <!-- PSGAN -->
+  <circle cx="860" cy="820" r="13" fill="#5c6bc0" fill-opacity="0.7" />
+  <text x="860" y="824" font-family="Arial, sans-serif" font-size="10" text-anchor="middle" fill="white">PSGAN</text>
+  <line x1="860" y1="807" x2="860" y2="787" stroke="#5c6bc0" stroke-width="1" stroke-dasharray="2" />
+  <text x="860" y="779" font-family="Arial, sans-serif" font-size="10" text-anchor="middle" fill="#5c6bc0">800KB / 20ms</text>
+  
+  <!-- BeautyDiffusion -->
+  <circle cx="830" cy="780" r="12" fill="#26a69a" fill-opacity="0.7" />
+  <text x="830" y="784" font-family="Arial, sans-serif" font-size="10" text-anchor="middle" fill="white">BD</text>
+  <line x1="830" y1="768" x2="830" y2="748" stroke="#26a69a" stroke-width="1" stroke-dasharray="2" />
+  <text x="830" y="740" font-family="Arial, sans-serif" font-size="10" text-anchor="middle" fill="#26a69a">750KB / 30ms</text>
+  
+  <!-- 범례 -->
+  <rect x="650" y="700" width="240" height="30" fill="white" stroke="#ccc" stroke-width="1" />
+  
+  <!-- 범례 아이템 -->
+  <circle cx="670" cy="715" r="5" fill="#6246ea" />
+  <text x="680" y="719" font-family="Arial, sans-serif" font-size="12" fill="#333">TinyBeauty</text>
+  
+  <circle cx="750" cy="715" r="5" fill="#ff9551" />
+  <text x="760" y="719" font-family="Arial, sans-serif" font-size="12" fill="#333">BeautyGAN</text>
+  
+  <circle cx="830" cy="715" r="5" fill="#5c6bc0" />
+  <text x="840" y="719" font-family="Arial, sans-serif" font-size="12" fill="#333">PSGAN</text>
+</svg>
