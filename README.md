@@ -1,62 +1,63 @@
-# 모바일 환경에서의 고품질 얼굴 메이크업 적용 기술 (TinyBeauty)
+# 移动环境中的高质量人脸美妆技术 (TinyBeauty)
 
 ![TinyBeauty 로고](images/tinybeauty_logo.svg)
 
-## 프로젝트 개요
+## 项目概要
 
-본 프로젝트는 모바일 환경에서 사용 가능한 고품질 얼굴 메이크업 적용 기술을 개발합니다. 주요 기술적 과제는 다음과 같습니다:
+本项目旨在开发可用于移动环境的高质量人脸美妆技术。主要技术挑战如下:
 
-1. **모델 크기**: 모바일 배포를 위한 작은 모델 크기(<100KB)
-2. **추론 속도**: 모바일 기기에서 실시간 성능(3ms 미만)
-3. **메이크업 품질**: 고화질(34dB 이상의 PSNR)
-4. **신원 보존**: 얼굴 특징 유지
-5. **효율적 훈련**: 제한된 학습 데이터(5쌍)로도 훈련 가능
+1. **模型大小**: 适用于移动部署的小模型大小(<100KB)
+2. **推理速度**: 移动设备上的实时性能(低于3ms)
+3. **美妆质量**: 高画质(PSNR高于34dB)
+4. **身份保持**: 保持面部特征
+5. **高效训练**: 即使是有限的训练数据(5对)也可进行训练
 
-이러한 문제들을 해결하기 위해 Data Amplify Learning (DAL) 프레임워크와 TinyBeauty 모델을 개발하여 구현했습니다.
+为了解决这些问题，我们开发并实现了 Data Amplify Learning (DAL) 框架和 TinyBeauty 模型。
 
-## 성과 요약
+## 成果摘要
 
-- **모델 크기**: 81KB (목표 100KB 미만 달성)
-- **추론 지연 시간**: 2.18ms (iPhone 13 기준, 목표 3ms 미만 달성)
-- **메이크업 품질**: 35.39dB PSNR (목표 34dB 이상 달성)
-- **사용자 평가**: 기존 방법들 대비 메이크업 품질 및 신원 보존에서 가장 높은 평가
+- **模型大小**: 81KB (达成目标：小于100KB)
+- **推理延迟时间**: 2.18ms (以 iPhone 13 为基准，达成目标：低于3ms)
+- **美妆质量**: 35.39dB PSNR (达成目标：高于34dB)
+- **用户评价**: 相较于现有方法，在美妆质量与身份保持方面获得最高评价
 
-## 기술적 기여
+## 技术贡献
 
-1. **Data Amplify Learning**: 제한된 초기 데이터로 고품질 학습 데이터를 생성하는 새로운 방법론
-2. **잔여 학습(Residual Learning)**: 모델이 전체 이미지가 아닌 차이(residuals)만 학습하도록 하여 디테일 보존
-3. **아이라이너 손실 함수**: Sobel 필터를 활용한 특수 손실 함수로 섬세한 메이크업 디테일 강화
-4. **경량 모델 설계**: 모바일 제약 조건에 맞는 효율적인 모델 아키텍처 개발
+1. **Data Amplify Learning**: 一种在初始数据有限的情况下生成高质量训练数据的新方法
+2. **残差学习(Residual Learning)**: 模型仅学习图像之间的差异（残差），以保留细节
+3. **眼线损失函数**: 利用 Sobel 滤波器的特殊损失函数强化精致的美妆细节
+4. **轻量模型设计**: 针对移动端约束条件开发的高效模型架构
 
-## 프로젝트 구조
+## 项目结构
+
+
 
 ```
 .
-├── 1_data_preprocessing/       # 데이터 시드 선택 및 주석 처리
-├── 2_dda_training/            # Diffusion-based Data Amplifier (DDA) 훈련
-├── 3_data_amplification/      # DDA를 이용한 데이터 증폭
-├── 4_tinybeauty_training/     # TinyBeauty 모델 훈련
-├── 5_model_optimization/      # 모델 최적화 및 CoreML 변환
-├── 6_ablation_studies/        # 아이라이너 손실 및 디테일 강화 검증
-├── 7_user_study/              # 사용자 연구 및 주관적 평가
-├── images/                    # 이미지 및 시각화 자료
-└── models/                    # 저장된 모델 파일
+├── 1_data_preprocessing/ # 数据种子选择与标注处理
+├── 2_dda_training/ # Diffusion-based Data Amplifier (DDA) 训练
+├── 3_data_amplification/ # 使用 DDA 进行数据增强
+├── 4_tinybeauty_training/ # TinyBeauty 模型训练
+├── 5_model_optimization/ # 模型优化与 CoreML 转换
+├── 6_ablation_studies/ # 眼线损失与细节增强验证
+├── 7_user_study/ # 用户研究与主观评价
+├── images/ # 图像与可视化资料
+└── models/ # 保存的模型文件
 ```
 
-## 실행 방법
+## 执行方法
 
-각 단계별 코드 실행에 대한 지침은 해당 디렉토리의 README 파일을 참조해주세요.
+关于各阶段代码的执行说明，请参考对应目录中的 README 文件。
 
-### 1. 환경 설정
+### 1. 环境设置
 
 ```bash
-# 가상 환경 생성 및 활성화
+# 创建并激活虚拟环境
 python -m venv venv
 source venv/bin/activate  # Windows: venv\Scripts\activate
 
-# 필요한 패키지 설치
+# 安装所需依赖包
 pip install -r requirements.txt
-```
 
 ### 2. 파이프라인 실행
 
@@ -65,18 +66,18 @@ pip install -r requirements.txt
 python run_pipeline.py --stage=all  # 전체 파이프라인 실행
 ```
 
-## 참고 문헌
+## 参考文献
 
-본 프로젝트는 다음 연구를 기반으로 합니다:
+本项目基于以下研究：
 
 - Stable Diffusion (Rombach et al., 2022)
 - BeautyGAN (Li et al., 2018)
 - FaRL: Face Representation Learning (Zheng et al., 2022)
 
-## 라이센스
+## 许可证
 
 MIT License
 
-## 작성자
+## 作者
 
-- 연구 및 구현: JJshome
+- 研究与实现: JJshome
