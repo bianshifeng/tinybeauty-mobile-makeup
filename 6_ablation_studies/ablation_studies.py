@@ -20,26 +20,26 @@ import json
 from datetime import datetime
 import sys
 
-# 상위 디렉토리 경로 추가하여 TinyBeauty 모델 클래스 임포트
+# 添加上级目录路径以导入 TinyBeauty 模型类
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 from 4_tinybeauty_training.tinybeauty_training import TinyBeauty, EyelinerLoss
 
-# 환경 설정
+# 环境设置
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 print(f"Using device: {device}")
 
-# 경로 설정
+# 路径设置
 DATA_DIR = "./amplified_data/"
 OUTPUT_DIR = "./ablation_studies/"
 os.makedirs(OUTPUT_DIR, exist_ok=True)
 
-# 데이터셋 클래스
+# 数据集类
 class MakeupPairDataset(Dataset):
     def __init__(self, data_dir, transform=None, split='test'):
         self.data_dir = data_dir
         self.transform = transform
         
-        # 원본 및 메이크업 이미지 경로 쌍 구성
+        # 构建原始图像和化妆图像路径对
         source_dir = os.path.join(data_dir, "source")
         target_dir = os.path.join(data_dir, "target")
         
@@ -53,10 +53,10 @@ class MakeupPairDataset(Dataset):
             if os.path.exists(target_path):
                 self.image_pairs.append((src_path, target_path))
         
-        # 테스트용으로 100개만 사용
+        # 测试时仅使用100个样本
         self.image_pairs = self.image_pairs[:100]
         
-        print(f"{split} 데이터셋에 {len(self.image_pairs)}개의 이미지 쌍이 있습니다.")
+        print(f"{split} 数据集中有 {len(self.image_pairs)} 对图像。")
     
     def __len__(self):
         return len(self.image_pairs)
@@ -64,23 +64,23 @@ class MakeupPairDataset(Dataset):
     def __getitem__(self, idx):
         src_path, target_path = self.image_pairs[idx]
         
-        # 이미지 로드
+        # 加载图像
         source_img = Image.open(src_path).convert("RGB")
         target_img = Image.open(target_path).convert("RGB")
         
-        # 변환 적용
+        # 应用变换
         if self.transform:
             source_img = self.transform(source_img)
             target_img = self.transform(target_img)
         
-        # 잔여물 계산 (타겟 - 소스)
+        # 计算残差（目标 - 原始）
         residual = target_img - source_img
         
-        # 눈 영역 검출 (여기에서는 단순화된 방식으로 구현)
+        # 检测眼部区域（此处以简化方式实现）
         eye_mask = torch.zeros_like(source_img[0:1])
         h, w = eye_mask.shape[1:]
         
-        # 눈 영역 (상단 1/3 영역의 중앙 부분을 단순화하여 가정)
+        # 假设眼部区域为顶部1/3区域的中央部分
         eye_y = h // 3
         eye_h = h // 10
         eye_mask[:, eye_y:eye_y+eye_h, w//4:3*w//4] = 1.0
@@ -94,58 +94,58 @@ class MakeupPairDataset(Dataset):
             'target_path': target_path
         }
 
-# 모델 훈련 함수 (아이라이너 손실 유무에 따른 비교)
+# 模型训练函数（对比使用和不使用眼线损失）
 def train_with_without_eyeliner(num_epochs=30, batch_size=32, learning_rate=2e-4):
     """
-    아이라이너 손실을 사용한 경우와 사용하지 않은 경우의 모델을 훈련하고 비교합니다.
+    训练并比较使用眼线损失和不使用眼线损失的模型。
     """
-    # 데이터 변환
+    # 数据变换
     transform = transforms.Compose([
         transforms.Resize((256, 256)),
         transforms.ToTensor(),
     ])
     
-    # 데이터셋 및 데이터 로더 생성
+    # 创建数据集和数据加载器
     train_dataset = MakeupPairDataset(DATA_DIR, transform, split='train')
     val_dataset = MakeupPairDataset(DATA_DIR, transform, split='val')
     
     train_loader = DataLoader(train_dataset, batch_size=batch_size, shuffle=True, num_workers=4)
     val_loader = DataLoader(val_dataset, batch_size=batch_size, shuffle=False, num_workers=4)
     
-    # 두 개의 모델 초기화 (동일한 초기화를 위해 동일한 시드 사용)
+    # 初始化两个模型（使用相同的随机种子以确保相同初始化）
     torch.manual_seed(42)
     model_with_eyeliner = TinyBeauty().to(device)
     
     torch.manual_seed(42)
     model_without_eyeliner = TinyBeauty().to(device)
     
-    # 손실 함수
+    # 损失函数
     l1_loss = nn.L1Loss()
     eyeliner_loss = EyelinerLoss()
     
-    # 옵티마이저
+    # 优化器
     optimizer_with = torch.optim.Adam(model_with_eyeliner.parameters(), lr=learning_rate)
     optimizer_without = torch.optim.Adam(model_without_eyeliner.parameters(), lr=learning_rate)
     
-    # 학습 스케줄러
+    # 学习率调度器
     scheduler_with = torch.optim.lr_scheduler.ReduceLROnPlateau(optimizer_with, 'min', patience=5, factor=0.5, verbose=True)
     scheduler_without = torch.optim.lr_scheduler.ReduceLROnPlateau(optimizer_without, 'min', patience=5, factor=0.5, verbose=True)
     
-    # wandb 초기화
+    # 初始化 wandb
     wandb.init(project="eyeliner-ablation", name="eyeliner-comparison")
     
-    # 훈련 결과 저장
+    # 保存训练结果
     results = {
         'with_eyeliner': {'train_loss': [], 'val_loss': [], 'val_psnr': [], 'val_lpips': []},
         'without_eyeliner': {'train_loss': [], 'val_loss': [], 'val_psnr': [], 'val_lpips': []}
     }
     
-    # LPIPS 모델 초기화
+    # 初始化 LPIPS 模型
     lpips_model = LPIPS(net='alex').to(device)
     
-    # 학습 루프
+    # 训练循环
     for epoch in range(num_epochs):
-        # 1. 아이라이너 손실을 사용한 모델 훈련
+        # 1. 训练使用眼线损失的模型
         model_with_eyeliner.train()
         train_loss_with = 0
         train_samples = 0
@@ -157,35 +157,35 @@ def train_with_without_eyeliner(num_epochs=30, batch_size=32, learning_rate=2e-4
                 residual_gt = batch['residual'].to(device)
                 eye_mask = batch['eye_mask'].to(device)
                 
-                # 순전파
+                # 前向传播
                 residual_pred = model_with_eyeliner(source)
                 pred = source + residual_pred
                 
-                # 손실 계산
+                # 计算损失
                 l1_loss_value = l1_loss(residual_pred, residual_gt)
                 eyeliner_loss_value = eyeliner_loss(pred, target, eye_mask)
                 
-                # 가중치가 적용된 최종 손실
+                # 加权后的最终损失
                 loss = l1_loss_value + 0.5 * eyeliner_loss_value
                 
-                # 역전파 및 최적화
+                # 反向传播和优化
                 optimizer_with.zero_grad()
                 loss.backward()
                 optimizer_with.step()
                 
-                # 통계 업데이트
+                # 更新统计信息
                 batch_size = source.size(0)
                 train_loss_with += loss.item() * batch_size
                 train_samples += batch_size
                 
-                # tqdm 진행률 표시 업데이트
+                # 更新 tqdm 进度条
                 t.set_postfix(loss=f"{loss.item():.4f}")
         
-        # 에폭별 평균 훈련 손실
+        # 每个 epoch 的平均训练损失
         avg_train_loss_with = train_loss_with / train_samples
         results['with_eyeliner']['train_loss'].append(avg_train_loss_with)
         
-        # 2. 아이라이너 손실을 사용하지 않은 모델 훈련
+        # 2. 训练不使用眼线损失的模型
         model_without_eyeliner.train()
         train_loss_without = 0
         
@@ -195,29 +195,29 @@ def train_with_without_eyeliner(num_epochs=30, batch_size=32, learning_rate=2e-4
                 target = batch['target'].to(device)
                 residual_gt = batch['residual'].to(device)
                 
-                # 순전파
+                # 前向传播
                 residual_pred = model_without_eyeliner(source)
                 
-                # 손실 계산 (아이라이너 손실 없음)
+                # 计算损失（不使用眼线损失）
                 loss = l1_loss(residual_pred, residual_gt)
                 
-                # 역전파 및 최적화
+                # 反向传播和优化
                 optimizer_without.zero_grad()
                 loss.backward()
                 optimizer_without.step()
                 
-                # 통계 업데이트
+                # 更新统计信息
                 batch_size = source.size(0)
                 train_loss_without += loss.item() * batch_size
                 
-                # tqdm 진행률 표시 업데이트
+                # 更新 tqdm 进度条
                 t.set_postfix(loss=f"{loss.item():.4f}")
         
-        # 에폭별 평균 훈련 손실
+        # 每个 epoch 的平均训练损失
         avg_train_loss_without = train_loss_without / train_samples
         results['without_eyeliner']['train_loss'].append(avg_train_loss_without)
         
-        # 3. 검증
+        # 3. 验证
         model_with_eyeliner.eval()
         model_without_eyeliner.eval()
         
@@ -237,22 +237,22 @@ def train_with_without_eyeliner(num_epochs=30, batch_size=32, learning_rate=2e-4
                     residual_gt = batch['residual'].to(device)
                     eye_mask = batch['eye_mask'].to(device)
                     
-                    # 모델 예측
+                    # 模型预测
                     residual_pred_with = model_with_eyeliner(source)
                     residual_pred_without = model_without_eyeliner(source)
                     
                     pred_with = source + residual_pred_with
                     pred_without = source + residual_pred_without
                     
-                    # 손실 계산
+                    # 计算损失
                     l1_loss_with = l1_loss(residual_pred_with, residual_gt)
                     eyeliner_loss_with = eyeliner_loss(pred_with, target, eye_mask)
                     loss_with = l1_loss_with + 0.5 * eyeliner_loss_with
                     
                     l1_loss_without = l1_loss(residual_pred_without, residual_gt)
-                    loss_without = l1_loss_without  # 아이라이너 손실 없음
+                    loss_without = l1_loss_without  # 不使用眼线损失
                     
-                    # PSNR 계산
+                    # 计算 PSNR
                     for i in range(pred_with.size(0)):
                         pred_with_np = pred_with[i].permute(1, 2, 0).cpu().numpy().clip(0, 1)
                         pred_without_np = pred_without[i].permute(1, 2, 0).cpu().numpy().clip(0, 1)
@@ -264,20 +264,20 @@ def train_with_without_eyeliner(num_epochs=30, batch_size=32, learning_rate=2e-4
                         val_psnr_with += psnr_with
                         val_psnr_without += psnr_without
                     
-                    # LPIPS 계산
+                    # 计算 LPIPS
                     lpips_with = lpips_model(pred_with, target).mean()
                     lpips_without = lpips_model(pred_without, target).mean()
                     
                     val_lpips_with += lpips_with.item() * source.size(0)
                     val_lpips_without += lpips_without.item() * source.size(0)
                     
-                    # 통계 업데이트
+                    # 更新统计信息
                     batch_size = source.size(0)
                     val_loss_with += loss_with.item() * batch_size
                     val_loss_without += loss_without.item() * batch_size
                     val_samples += batch_size
         
-        # 평균 검증 지표
+        # 平均验证指标
         avg_val_loss_with = val_loss_with / val_samples
         avg_val_loss_without = val_loss_without / val_samples
         avg_val_psnr_with = val_psnr_with / val_samples
@@ -285,7 +285,7 @@ def train_with_without_eyeliner(num_epochs=30, batch_size=32, learning_rate=2e-4
         avg_val_lpips_with = val_lpips_with / val_samples
         avg_val_lpips_without = val_lpips_without / val_samples
         
-        # 결과 저장
+        # 保存结果
         results['with_eyeliner']['val_loss'].append(avg_val_loss_with)
         results['with_eyeliner']['val_psnr'].append(avg_val_psnr_with)
         results['with_eyeliner']['val_lpips'].append(avg_val_lpips_with)
@@ -294,16 +294,16 @@ def train_with_without_eyeliner(num_epochs=30, batch_size=32, learning_rate=2e-4
         results['without_eyeliner']['val_psnr'].append(avg_val_psnr_without)
         results['without_eyeliner']['val_lpips'].append(avg_val_lpips_without)
         
-        # 학습률 스케줄러 업데이트
+        # 更新学习率调度器
         scheduler_with.step(avg_val_loss_with)
         scheduler_without.step(avg_val_loss_without)
         
-        # 로그 출력
+        # 打印日志
         print(f"Epoch {epoch+1}/{num_epochs}")
         print(f"With Eyeliner - Train Loss: {avg_train_loss_with:.4f}, Val Loss: {avg_val_loss_with:.4f}, PSNR: {avg_val_psnr_with:.2f}dB, LPIPS: {avg_val_lpips_with:.4f}")
         print(f"Without Eyeliner - Train Loss: {avg_train_loss_without:.4f}, Val Loss: {avg_val_loss_without:.4f}, PSNR: {avg_val_psnr_without:.2f}dB, LPIPS: {avg_val_lpips_without:.4f}")
         
-        # wandb에 로깅
+        # 记录到 wandb
         wandb.log({
             "epoch": epoch + 1,
             "with_eyeliner/train_loss": avg_train_loss_with,
@@ -316,22 +316,22 @@ def train_with_without_eyeliner(num_epochs=30, batch_size=32, learning_rate=2e-4
             "without_eyeliner/val_lpips": avg_val_lpips_without,
         })
         
-        # 시각화 (마지막 에폭 또는 5에폭마다)
+        # 可视化（最后一个 epoch 或每 5 个 epoch）
         if (epoch + 1) % 5 == 0 or epoch == num_epochs - 1:
             with torch.no_grad():
-                # 검증 세트에서 몇 개의 샘플 선택
+                # 从验证集中选择一些样本
                 vis_batch = next(iter(val_loader))
-                source = vis_batch['source'][:3].to(device)  # 3개 샘플만 사용
+                source = vis_batch['source'][:3].to(device)  # 仅使用 3 个样本
                 target = vis_batch['target'][:3].to(device)
                 
-                # 예측
+                # 预测
                 residual_pred_with = model_with_eyeliner(source)
                 residual_pred_without = model_without_eyeliner(source)
                 
                 pred_with = source + residual_pred_with
                 pred_without = source + residual_pred_without
                 
-                # 그리드 이미지 생성 (원본, 아이라이너 손실 사용, 아이라이너 손실 미사용, 타겟)
+                # 创建网格图像（原始、使用眼线损失、不使用眼线损失、目标）
                 vis_images = []
                 for i in range(source.size(0)):
                     vis_images.append(source[i])
@@ -342,7 +342,7 @@ def train_with_without_eyeliner(num_epochs=30, batch_size=32, learning_rate=2e-4
                 grid = make_grid(vis_images, nrow=4, normalize=True)
                 grid_np = grid.permute(1, 2, 0).cpu().numpy()
                 
-                # 이미지 저장
+                # 保存图像
                 plt.figure(figsize=(20, 5 * source.size(0)))
                 plt.imshow(grid_np)
                 plt.axis('off')
@@ -350,12 +350,12 @@ def train_with_without_eyeliner(num_epochs=30, batch_size=32, learning_rate=2e-4
                 plt.savefig(os.path.join(OUTPUT_DIR, f"eyeliner_comparison_epoch_{epoch+1}.png"))
                 plt.close()
                 
-                # wandb에 시각화 로깅
+                # 记录到 wandb
                 wandb.log({
                     "comparison": wandb.Image(os.path.join(OUTPUT_DIR, f"eyeliner_comparison_epoch_{epoch+1}.png"))
                 })
     
-    # 최종 모델 저장
+    # 保存最终模型
     torch.save({
         'model_state_dict': model_with_eyeliner.state_dict(),
     }, os.path.join(OUTPUT_DIR, "model_with_eyeliner.pt"))
@@ -364,16 +364,16 @@ def train_with_without_eyeliner(num_epochs=30, batch_size=32, learning_rate=2e-4
         'model_state_dict': model_without_eyeliner.state_dict(),
     }, os.path.join(OUTPUT_DIR, "model_without_eyeliner.pt"))
     
-    # 결과 저장
+    # 保存结果
     with open(os.path.join(OUTPUT_DIR, "eyeliner_ablation_results.json"), 'w') as f:
         json.dump(results, f)
     
-    # 결과 시각화
+    # 可视化结果
     epochs = list(range(1, num_epochs + 1))
     
     plt.figure(figsize=(15, 10))
     
-    # 훈련 손실
+    # 训练损失
     plt.subplot(2, 2, 1)
     plt.plot(epochs, results['with_eyeliner']['train_loss'], label='With Eyeliner')
     plt.plot(epochs, results['without_eyeliner']['train_loss'], label='Without Eyeliner')
@@ -382,7 +382,7 @@ def train_with_without_eyeliner(num_epochs=30, batch_size=32, learning_rate=2e-4
     plt.ylabel('Loss')
     plt.legend()
     
-    # 검증 손실
+    # 验证损失
     plt.subplot(2, 2, 2)
     plt.plot(epochs, results['with_eyeliner']['val_loss'], label='With Eyeliner')
     plt.plot(epochs, results['without_eyeliner']['val_loss'], label='Without Eyeliner')
@@ -413,39 +413,39 @@ def train_with_without_eyeliner(num_epochs=30, batch_size=32, learning_rate=2e-4
     plt.savefig(os.path.join(OUTPUT_DIR, "eyeliner_ablation_metrics.png"))
     plt.close()
     
-    # wandb 종료
+    # 结束 wandb
     wandb.finish()
     
     return results
 
-# 잔여 디테일 강화 (RDM) 효과 검증 함수
+# 残余细节增强 (RDM) 效果验证函数
 def evaluate_rdm_effect():
     """
-    Residual Diffusion Model (RDM)의 효과를 검증합니다.
-    이 함수는 DDA 단계에서 RDM을 적용했을 때와 적용하지 않았을 때의
-    생성된 데이터 품질을 비교합니다.
+    验证 Residual Diffusion Model (RDM) 的效果。
+    此函数比较在 DDA 阶段应用 RDM 和未应用 RDM 时
+    生成的数据质量。
     
-    참고: 이 함수는 실제로 두 개의 DDA 모델 (RDM 적용/미적용)을 훈련하고
-    데이터를 생성하는 과정이 필요하지만, 컴퓨팅 자원 제약으로 인해
-    여기서는 결과 시뮬레이션을 보여줍니다.
+    注意：此函数实际上需要训练两个 DDA 模型（应用 RDM/未应用 RDM）
+    并生成数据，但由于计算资源限制，
+    这里展示的是结果的模拟。
     """
-    # 시뮬레이션된 결과 (실제 구현에서는 실험을 통해 얻음)
+    # 模拟结果（实际实现中通过实验获得）
     rdm_results = {
         'with_rdm': {
-            'psnr': 35.39,  # 논문에서 보고된 PSNR 값
-            'fid': 8.03,    # 논문에서 보고된 FID 값
-            'detail_preservation': 0.92,  # 예시 값 (0-1, 높을수록 좋음)
-            'wrinkle_preservation': 0.88,  # 예시 값
+            'psnr': 35.39,  # 论文中报告的 PSNR 值
+            'fid': 8.03,    # 论文中报告的 FID 值
+            'detail_preservation': 0.92,  # 示例值 (0-1, 值越高越好)
+            'wrinkle_preservation': 0.88,  # 示例值
         },
         'without_rdm': {
-            'psnr': 32.45,  # 예시 값
-            'fid': 12.31,   # 예시 값
-            'detail_preservation': 0.78,  # 예시 값
-            'wrinkle_preservation': 0.65,  # 예시 값
+            'psnr': 32.45,  # 示例值
+            'fid': 12.31,   # 示例值
+            'detail_preservation': 0.78,  # 示例值
+            'wrinkle_preservation': 0.65,  # 示例值
         }
     }
     
-    # 결과 시각화
+    # 结果可视化
     metrics = ['PSNR (dB)', 'FID (Lower is Better)', 'Detail Preservation', 'Wrinkle Preservation']
     with_rdm_values = [
         rdm_results['with_rdm']['psnr'],
@@ -460,7 +460,7 @@ def evaluate_rdm_effect():
         rdm_results['without_rdm']['wrinkle_preservation']
     ]
     
-    # 차트 생성
+    # 创建图表
     x = np.arange(len(metrics))
     width = 0.35
     
@@ -473,7 +473,7 @@ def evaluate_rdm_effect():
     ax.set_xticklabels(metrics)
     ax.legend()
     
-    # 값 표시
+    # 显示值
     def autolabel(rects):
         for rect in rects:
             height = rect.get_height()
@@ -490,18 +490,18 @@ def evaluate_rdm_effect():
     plt.savefig(os.path.join(OUTPUT_DIR, "rdm_effect_comparison.png"))
     plt.close()
     
-    # 결과 저장
+    # 保存结果
     with open(os.path.join(OUTPUT_DIR, "rdm_effect_results.json"), 'w') as f:
         json.dump(rdm_results, f)
     
     return rdm_results
 
-# 실행 코드
+# 执行代码
 if __name__ == "__main__":
-    # 1. 아이라이너 손실 효과 검증
-    eyeliner_results = train_with_without_eyeliner(num_epochs=5)  # 실제 구현에서는 더 많은 에폭 사용
+    # 1. 验证眼线损失效果
+    eyeliner_results = train_with_without_eyeliner(num_epochs=5)  # 实际实现中使用更多的训练轮数
     
-    # 2. RDM 효과 검증
+    # 2. 验证 RDM 效果
     rdm_results = evaluate_rdm_effect()
     
-    print("6단계: 아이라이너 손실 및 디테일 강화 검증 완료")
+    print("第6阶段：眼线损失及细节增强验证完成")

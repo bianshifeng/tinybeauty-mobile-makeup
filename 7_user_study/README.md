@@ -1,127 +1,127 @@
-# 7단계: 사용자 연구 및 주관적 평가
+# 第7阶段：用户研究与主观评价
 
-이 단계에서는 100명의 참가자를 대상으로 TinyBeauty 시스템과 기존의 얼굴 메이크업 방법들을 비교하는 사용자 연구를 시뮬레이션합니다.
+在此阶段，我们对100名参与者进行模拟用户研究，比较TinyBeauty系统与现有的面部化妆方法。
 
-## 목적
+## 目的
 
-- TinyBeauty의 메이크업 효과를 기존 방법들(BeautyGAN, EleGANt, PSGAN, BeautyDiffusion)과 비교
-- 여러 평가 측면(메이크업 품질, 신원 보존, 디테일 충실도, 전체 만족도)에서의 주관적 평가 수집
-- 사용자 선호도 파악 및 통계적 분석
+- 比较TinyBeauty的化妆效果与现有方法（BeautyGAN、EleGANt、PSGAN、BeautyDiffusion）
+- 收集多种评价维度（化妆质量、身份保留、细节保真度、整体满意度）的主观评价
+- 分析用户偏好并进行统计分析
 
-## 주요 기능
+## 主要功能
 
-### 1. 메이크업 방법 시뮬레이션
+### 1. 化妆方法模拟
 
 ```python
 def apply_makeup_methods(image, methods=MAKEUP_METHODS):
     """
-    입력 이미지에 여러 메이크업 방법을 적용합니다.
-    실제 구현에서는 각 방법의 훈련된 모델을 사용하지만, 
-    여기서는 시뮬레이션을 위해 간단한 변형을 적용합니다.
+    对输入图像应用多种化妆方法。
+    在实际实现中，每种方法会使用训练好的模型，
+    但在这里为了模拟，仅应用简单的变换。
     """
-    # 각 방법별 효과 시뮬레이션:
-    # - TinyBeauty: 자연스러운 메이크업, 세부 정보 보존
-    # - BeautyGAN: 강한 메이크업 전송, 일부 디테일 손실
-    # - EleGANt: 강한 대비, 선명한 경계, 약간의 블러
-    # - PSGAN: 얼굴 형태 변화, 강한 메이크업
-    # - BeautyDiffusion: 많은 디테일 손실, 매우 부드러운 효과
+    # 各方法的效果模拟：
+    # - TinyBeauty: 自然化妆，保留细节
+    # - BeautyGAN: 强烈的化妆迁移，部分细节丢失
+    # - EleGANt: 强烈的对比，清晰的边界，略微模糊
+    # - PSGAN: 面部形状变化，强烈化妆
+    # - BeautyDiffusion: 大量细节丢失，非常柔和的效果
 ```
 
-### 2. 사용자 평가 시뮬레이션
+### 2. 用户评价模拟
 
 ```python
 def simulate_user_study(num_participants=100):
     """
-    사용자 연구 결과를 시뮬레이션합니다.
+    模拟用户研究结果。
     """
-    # 각 방법의 품질 가중치 (논문 결과 기반)
+    # 各方法的质量权重（基于论文结果）
     method_weights = {
-        "TinyBeauty": 0.9,     # 가장 좋은 평가
+        "TinyBeauty": 0.9,     # 评价最高
         "BeautyGAN": 0.7,
         "EleGANt": 0.75,
         "PSGAN": 0.65,
-        "BeautyDiffusion": 0.6  # 가장 낮은 평가
+        "BeautyDiffusion": 0.6  # 评价最低
     }
     
-    # 각 지표별 중요도
+    # 各指标的重要性
     metric_importance = {
-        "메이크업 품질": 1.0,
-        "신원 보존": 1.2,       # 논문에서 신원 보존이 중요하다고 강조
-        "디테일 충실도": 0.9,
-        "전체 만족도": 1.1
+        "化妆质量": 1.0,
+        "身份保留": 1.2,       # 论文中强调身份保留的重要性
+        "细节保真度": 0.9,
+        "整体满意度": 1.1
     }
     
-    # 사용자 평가 시뮬레이션 (1-5점 척도)
-    # 순위 산출 및 선호도 계산
+    # 用户评价模拟（1-5分制）
+    # 计算排名和偏好
 ```
 
-### 3. 결과 시각화 및 분석
+### 3. 结果可视化与分析
 
 ```python
-# 결과 시각화
-plot_average_scores(study_results)  # 평균 점수 비교
-plot_rankings(study_results)        # 평균 순위 비교
-plot_preference_pie(study_results)  # 선호도 파이 차트
-plot_comparative_images(test_dataset)  # 각 방법별 결과 이미지
+# 结果可视化
+plot_average_scores(study_results)  # 平均分数比较
+plot_rankings(study_results)        # 平均排名比较
+plot_preference_pie(study_results)  # 偏好分布饼图
+plot_comparative_images(test_dataset)  # 各方法的结果图像
 
-# 통계적 분석
-stats_df = generate_statistical_analysis(study_results)  # t-검정 수행
+# 统计分析
+stats_df = generate_statistical_analysis(study_results)  # 进行t检验
 ```
 
-## 사용 방법
+## 使用方法
 
 ```bash
-# 사용자 연구 시뮬레이션 실행
+# 运行用户研究模拟
 python user_study.py
 ```
 
-## 출력 결과
+## 输出结果
 
-- `user_study/average_scores.png`: 각 평가 지표별 평균 점수 비교
-- `user_study/average_rankings.png`: 각 평가 지표별 평균 순위 비교
-- `user_study/preference_pie.png`: 사용자 선호도 분포 파이 차트
-- `user_study/comparison_sample_*.png`: 여러 메이크업 방법의 시각적 비교
-- `user_study/statistical_analysis.csv`: 통계적 분석 결과
-- `user_study/overall_satisfaction_comparison.png`: 전체 만족도 비교
-- `user_study/user_study_results.json`: 원시 평가 데이터
+- `user_study/average_scores.png`: 各评价指标的平均分数比较
+- `user_study/average_rankings.png`: 各评价指标的平均排名比较
+- `user_study/preference_pie.png`: 用户偏好分布饼图
+- `user_study/comparison_sample_*.png`: 各化妆方法的视觉比较
+- `user_study/statistical_analysis.csv`: 统计分析结果
+- `user_study/overall_satisfaction_comparison.png`: 整体满意度比较
+- `user_study/user_study_results.json`: 原始评价数据
 
-## 평가 지표
+## 评价指标
 
-- **메이크업 품질**: 메이크업 적용의 자연스러움과 미적 효과
-- **신원 보존**: 메이크업 적용 후에도 원래 얼굴의 특징이 유지되는 정도
-- **디테일 충실도**: 얼굴 세부 특징(주름, 눈썹 등)의 보존 정도
-- **전체 만족도**: 종합적인 품질과 사용자 경험
+- **化妆质量**: 化妆应用的自然程度和美学效果
+- **身份保留**: 化妆后仍能保留原始面部特征的程度
+- **细节保真度**: 面部细节特征（如皱纹、眉毛等）的保留程度
+- **整体满意度**: 综合质量和用户体验
 
-## 주요 결과
+## 主要结果
 
-### 평균 점수
-- TinyBeauty: 4.7/5.0 (전체 만족도)
+### 平均分数
+- TinyBeauty: 4.7/5.0（整体满意度）
 - BeautyGAN: 4.0/5.0
 - EleGANt: 4.2/5.0
 - PSGAN: 3.7/5.0
 - BeautyDiffusion: 3.5/5.0
 
-### 평균 순위
-- TinyBeauty: 1.3 (거의 모든 평가에서 1위)
+### 平均排名
+- TinyBeauty: 1.3（几乎在所有评价中排名第一）
 - EleGANt: 2.1
 - BeautyGAN: 2.5
 - PSGAN: 3.6
 - BeautyDiffusion: 4.2
 
-### 사용자 선호도
+### 用户偏好
 - TinyBeauty: 62%
 - EleGANt: 18%
 - BeautyGAN: 12%
 - PSGAN: 6%
 - BeautyDiffusion: 2%
 
-### 통계적 유의성
-- TinyBeauty는 모든 다른 방법과 비교해 통계적으로 유의미한 성능 향상 (p < 0.05)
-- 특히 신원 보존 측면에서 큰 차이 (t = 11.32, p < 0.001)
+### 统计显著性
+- TinyBeauty在与所有其他方法的比较中表现出统计上显著的性能提升（p < 0.05）
+- 特别是在身份保留方面差异显著（t = 11.32, p < 0.001）
 
-## 기술적 세부사항
+## 技术细节
 
-- **참가자 수**: 100명 (가상 시뮬레이션)
-- **평가 방식**: 1-5점 척도 (5점이 최고 점수)
-- **비교 대상**: 총 5가지 메이크업 방법 비교
-- **통계 테스트**: 독립 표본 t-검정 (유의수준 0.05)
+- **参与者数量**: 100名（虚拟模拟）
+- **评价方式**: 1-5分制（5分为最高分）
+- **比较对象**: 共5种化妆方法
+- **统计测试**: 独立样本t检验（显著性水平0.05）

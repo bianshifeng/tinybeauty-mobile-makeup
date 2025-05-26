@@ -1,29 +1,29 @@
-# 2단계: Diffusion-based Data Amplifier (DDA) 훈련
+# 第2阶段：基于扩散的数据增强器 (DDA) 训练
 
-이 단계에서는 1단계에서 생성한 5쌍의 시드 데이터를 사용하여 메이크업 전송을 위한 Diffusion-based Data Amplifier (DDA)를 훈련합니다.
+在此阶段，我们使用第1阶段生成的5对种子数据，训练用于化妆迁移的基于扩散的数据增强器 (DDA)。
 
-## 목적
+## 目的
 
-- Stable Diffusion 모델을 기반으로 메이크업 전송 능력을 학습
-- 제한된 시드 데이터로 고품질 메이크업 전송이 가능한 모델 개발
-- 얼굴 디테일 보존과 신원 유지 기능 포함
+- 基于 Stable Diffusion 模型学习化妆迁移能力
+- 开发能够在有限种子数据上实现高质量化妆迁移的模型
+- 包含面部细节保留和身份保持功能
 
-## 주요 컴포넌트
+## 主要组件
 
-### 1. Residual Diffusion Model (RDM)
+### 1. 残差扩散模型 (Residual Diffusion Model, RDM)
 
 ```python
 class ResidualDiffusionModel(nn.Module):
     def __init__(self, unet):
         super().__init__()
         self.unet = unet
-        self.alpha = nn.Parameter(torch.tensor(0.5))  # 잔여물 가중치 파라미터
+        self.alpha = nn.Parameter(torch.tensor(0.5))  # 残差权重参数
         
     def forward(self, latents, timesteps, context, residual_input=None):
-        # 기본 UNet 출력
+        # 基本 UNet 输出
         base_output = self.unet(latents, timesteps, context)
         
-        # 잔여물 적용 (디테일 보존)
+        # 应用残差（保留细节）
         if residual_input is not None:
             output = base_output.sample + self.alpha * residual_input
             return base_output._replace(sample=output)
@@ -31,24 +31,24 @@ class ResidualDiffusionModel(nn.Module):
         return base_output
 ```
 
-### 2. Fine-Grained Makeup Module (FGMM)
+### 2. 细粒度化妆模块 (Fine-Grained Makeup Module, FGMM)
 
 ```python
 class FineGrainedMakeupModule(nn.Module):
     def __init__(self):
         super().__init__()
-        # 얼굴 영역별 가중치 파라미터
+        # 面部区域的权重参数
         self.eyes_weight = nn.Parameter(torch.tensor(1.0))
         self.lips_weight = nn.Parameter(torch.tensor(1.0))
         self.skin_weight = nn.Parameter(torch.tensor(1.0))
         
     def forward(self, makeup_features, face_mask):
-        # 얼굴 구성 요소별 마스크 추출
-        eye_mask = (face_mask == 1).float()  # 눈 영역
-        lips_mask = (face_mask == 2).float() # 입술 영역
-        skin_mask = (face_mask == 3).float() # 피부 영역
+        # 提取面部组成部分的掩码
+        eye_mask = (face_mask == 1).float()  # 眼睛区域
+        lips_mask = (face_mask == 2).float() # 嘴唇区域
+        skin_mask = (face_mask == 3).float() # 皮肤区域
         
-        # 부위별 가중치 적용
+        # 应用区域权重
         weighted_features = (
             self.eyes_weight * eye_mask * makeup_features +
             self.lips_weight * lips_mask * makeup_features +
@@ -58,36 +58,36 @@ class FineGrainedMakeupModule(nn.Module):
         return weighted_features
 ```
 
-## 훈련 방법
+## 训练方法
 
-1. Stable Diffusion v1.5를 LoRA 방식으로 미세 조정
-2. RDM 및 FGMM 모듈 결합하여 얼굴 세부 정보 보존
-3. 아이라이너 손실 함수 (Sobel 필터) 구현으로 디테일 강화
-4. 5쌍의 시드 이미지에서 학습 (500 에폭)
+1. 使用 LoRA 方法对 Stable Diffusion v1.5 进行微调
+2. 结合 RDM 和 FGMM 模块以保留面部细节信息
+3. 实现眼线损失函数（Sobel 滤波器）以增强细节
+4. 使用5对种子图像进行训练（500个 epoch）
 
-## 사용 방법
+## 使用方法
 
 ```bash
-# DDA 모델 훈련
+# DDA 模型训练
 python dda_training.py
 ```
 
-## 출력 결과
+## 输出结果
 
-- `dda_model/dda_checkpoint_epoch_{epoch}.pt`: 훈련 중간 체크포인트
-- `dda_model/sample_epoch_{epoch}.png`: 훈련 중 생성된 샘플 이미지
-- `dda_model/dda_final.pt`: 최종 훈련된 모델
+- `dda_model/dda_checkpoint_epoch_{epoch}.pt`: 训练中间的检查点
+- `dda_model/sample_epoch_{epoch}.png`: 训练中生成的样本图像
+- `dda_model/dda_final.pt`: 最终训练的模型
 
-## 품질 관리
+## 质量管理
 
-- 훈련 과정은 WandB를 통해 손실 추적
-- 아이라이너 손실을 사용하여 디테일 충실도 측정
-- 50 에폭마다 샘플 이미지 생성하여 시각적 품질 검사
+- 通过 WandB 跟踪训练过程中的损失
+- 使用眼线损失测量细节保真度
+- 每50个 epoch 生成样本图像以检查视觉质量
 
-## 기술적 세부사항
+## 技术细节
 
-- **Learning Rate**: 1e-4
-- **Batch Size**: 1 (메모리 제약)
-- **Optimizer**: Adam
-- **LoRA Rank**: 16
-- **훈련 디바이스**: NVIDIA V100 GPU (권장)
+- **学习率**: 1e-4
+- **批量大小**: 1（受内存限制）
+- **优化器**: Adam
+- **LoRA 秩**: 16
+- **训练设备**: NVIDIA V100 GPU（推荐）
